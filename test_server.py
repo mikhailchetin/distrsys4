@@ -1,10 +1,9 @@
 import xmlrpclib
 import sys
-
+from server import Server
 
 class TestFailedException(Exception):
     pass
-
 
 def test(condition, description):
     if not condition:
@@ -19,9 +18,9 @@ def main():
     srv1_name = "http://localhost:10001"
     srv2_name = "http://localhost:10002"
 
-    coordinator = xmlrpclib.ServerProxy(coord_name, allow_none=True)
-    server1 = xmlrpclib.ServerProxy(srv1_name, allow_none=True)
-    server2 = xmlrpclib.ServerProxy(srv2_name, allow_none=True)
+    coordinator = xmlrpclib.ServerProxy(coord_name)
+    server1 = xmlrpclib.ServerProxy(srv1_name)
+    server2 = xmlrpclib.ServerProxy(srv2_name)
     longDelay = 10
 
     try:
