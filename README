@@ -1,10 +1,7 @@
-Usage:
-python coordinator.py //coordinator is always run on localhost:10000
-python server.py <host> <port>
+To test productivity run:
 
-To test servers run:
-python coordinator.py
-python server.py localhost 10001
-python server.py localhost 10002
-python test_server.py
+python2.6 coordinator.py
+python2.6 server.py localhost 10001
+python2.6 server.py localhost 10002
+python2.6 test_productivity.py
 

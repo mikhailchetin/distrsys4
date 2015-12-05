@@ -1,6 +1,7 @@
 import xmlrpclib
 import sys
 from SimpleXMLRPCServer import SimpleXMLRPCServer
+import SocketServer
 
 
 class Server():
@@ -18,11 +19,11 @@ class Server():
         if self.viewNumber != newView:
             for key, value in self.storage.items():
                 self.put_backup(key, value)
+                #debug message to make sure master is copying data to backup simultaneously with being bombed by put requests
+                #print "copying data to backup", key
             self.viewNumber = self.coordinator.ping(newView, self.name)['number']
 
     def put(self, key, value):
-        print "My name is ", self.name
-        print "I put key ", key, " and value ", value, " inside me"
         if self.coordinator.master() and self.name == self.coordinator.master():
             self.additem(key, value)
             self.put_backup(key, value)
@@ -37,9 +38,17 @@ class Server():
     def get(self, key):
         return self.storage[key]
 
+    def clear_storage(self):
+        self.storage = {}
+
+
+class AsyncXMLRPCServer(SocketServer.ThreadingMixIn,SimpleXMLRPCServer):
+    pass
+
 
 def main():
-    server = SimpleXMLRPCServer((sys.argv[1], int(sys.argv[2])), allow_none=True)
+    #using async server to support multi-threading
+    server = AsyncXMLRPCServer((sys.argv[1], int(sys.argv[2])), allow_none=True)
     server.register_instance(Server('http://' + sys.argv[1] + ':' + sys.argv[2], "http://localhost:10000"))
     server.serve_forever()
 
